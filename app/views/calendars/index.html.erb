@@ -5,4 +5,11 @@
   Calendar.init();
 </script>
 
+<%= form_tag "/", :id => "date_form" do %>
+  Year: <%= text_field_tag 'year', nil, :id => "year", :placeholder => "2016" %>
+  Month: <%= text_field_tag 'month', nil, :id => "month", :placeholder => "01" %>
+  Day: <%= text_field_tag 'day', nil, :id => "day", :placeholder => "01" %>
+  <%= submit_tag("test") %>
+<% end %>
+
 <div id="calendar"></div>
