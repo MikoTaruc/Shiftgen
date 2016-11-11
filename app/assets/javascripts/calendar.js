@@ -50,18 +50,22 @@ var Calendar = {
           break;
         }
       }
-      var title
-      events.push({
+      var shift_event = {
         title: title({shift: i}),
         // Plus 1 to month because FullCalendar has January as 1 instead of 0.
-        start: int_year+ '-' + Calendar.pad(int_month + 1) + '-' + Calendar.pad(int_date),
+        start: int_year+ '-' + CalendarHelpers.pad(int_month + 1) + '-' + CalendarHelpers.pad(int_date),
         metadata: {
           year: int_year,
           month: int_month,
           date: int_date,
           pay_period: pay_period
         }
-      });
+      };
+
+      // This changes the pay_periods object JAVASCRIPT MAGIC:
+      // Javascript always passes by value but if the variable is referring to an object (arrays include), the underlying object changes as well
+      pay_periods[n].shifts.push(shift_event);
+      events.push(shift_event);
       d++;
     }
     return events;
@@ -79,19 +83,12 @@ var Calendar = {
       period['start'] = new Date(boundary.getTime());
       boundary = new Date(boundary.getFullYear(), boundary.getMonth(), boundary.getDate() + block_size);
       period['end'] = new Date(boundary.getTime());
+      period['shifts'] = [];
       // $extend to deep copy
       pay_periods[i] = $.extend(true, {}, period);
       i++;
     }
     return pay_periods;
-  },
-
-  pad: function(num){
-    if (num < 10) {
-      return "0" + num;
-    } else {
-      return num;
-    }
   },
 
   addShifts: function(y, m, d, py, pm, pd) {
@@ -114,8 +111,6 @@ var Calendar = {
       day = last_day.metadata.date + 1 + break_size;
       first_run = false;
     }
-
-    debugger;
 
     $('#calendar').fullCalendar("addEventSource", events);
   }
