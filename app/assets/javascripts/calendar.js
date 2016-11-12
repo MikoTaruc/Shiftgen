@@ -38,15 +38,22 @@ var Calendar = {
     return Calendar.calendar.fullCalendar("clientEvents");
   },
 
-  generateBlock: function(y, m, d, pay_periods) {
+  generateBlock: function(data, pay_periods) {
     var events = [];
     var shift, pay_period;
     var title = _.template('Shift: {{shift}}, Pay: {{period}}');
+
     for (var i = 0; i < Calendar.shift_block; i++) {
-      shift = new Date(y, m, d);
+      shift = new Date(data.year, data.month, data.date);
+
       var int_year = shift.getFullYear();
       var int_month = shift.getMonth();
       var int_date = shift.getDate();
+
+      if (int_year > data.year) {
+        data.valid_dates = false;
+        break;
+      }
 
       for (var n = 0; n < pay_periods.length; n++) {
         if (shift >= pay_periods[n].start && shift <= pay_periods[n].end) {
@@ -54,6 +61,7 @@ var Calendar = {
           break;
         }
       }
+
       var shift_event = {
         title: title({shift: i, period: n}),
         // Plus 1 to month because FullCalendar has January as 1 instead of 0.
@@ -70,22 +78,23 @@ var Calendar = {
       // Javascript always passes by value but if the variable is referring to an object (arrays include), the underlying object changes as well
       pay_periods[n].shifts.push(shift_event);
       events.push(shift_event);
-      d++;
+      data.date++;
     }
+
     return events;
   },
 
-  generatePayPeriodArray: function(y, m, d, block_size, current_year) {
+  generatePayPeriodArray: function(data) {
     var pay_periods = [];
-    var boundary = new Date(y, m, d);
+    var boundary = new Date(data.year, data.month, data.date);
     var i = 0;
     var period = {};
 
-    while(boundary.getFullYear() <= current_year) {
+    while(boundary.getFullYear() <= data.year) {
       // have to use new Date .getTime() because javascript = passes reference to variable location instead of value
       // so we create a new object
       period['start'] = new Date(boundary.getTime());
-      boundary = new Date(boundary.getFullYear(), boundary.getMonth(), boundary.getDate() + block_size);
+      boundary = new Date(boundary.getFullYear(), boundary.getMonth(), boundary.getDate() + Calendar.pay_period_length);
       period['end'] = new Date(boundary.getTime());
       period['shifts'] = [];
       // $extend to deep copy
@@ -104,19 +113,30 @@ var Calendar = {
     var pay_month = parseInt(pm - 1);
     var pay_day = parseInt(pd);
 
-    Calendar.addShifts(year, month, day, pay_year, pay_month, pay_day);
+    data = {
+      year: year,
+      month: month,
+      date: day,
+      pay_year: pay_year,
+      pay_month: pay_month,
+      pay_date: pay_day,
+      valid_dates: true
+    };
+
+    Calendar.addShifts(data);
+    // Calendar.addShifts(year, month, day, pay_year, pay_month, pay_day);
   },
 
-  addShifts: function(year, month, day, pay_year, pay_month, pay_day) {
+  addShifts: function(data) {
     var events = [];
-    var pay_period_array = Calendar.generatePayPeriodArray(pay_year, pay_month, pay_day, Calendar.pay_period_length, year);
+    var pay_period_array = Calendar.generatePayPeriodArray(data);
     var first_run = true;
-
-    while(first_run || last_day.metadata.year === year) {
-      events = events.concat(Calendar.generateBlock(year, month, day, pay_period_array));
+    // var i = 0;
+    while (data.valid_dates && (first_run || last_day.metadata.year === data.year)) {
+      events = events.concat(Calendar.generateBlock(data, pay_period_array));
       var last_day = events[events.length-1];
-      month = last_day.metadata.month;
-      day = last_day.metadata.date + 1 + Calendar.break_size;
+      data.month = last_day.metadata.month;
+      data.date = last_day.metadata.date + 1 + Calendar.break_size;
       first_run = false;
     }
 
