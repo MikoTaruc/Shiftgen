@@ -14,6 +14,7 @@ gem 'devise'
 gem 'will_paginate', '~> 3.0.6'
 gem 'fullcalendar-rails'
 gem 'momentjs-rails'
+gem 'google-api-client', '~> 0.9.13'
 
 group :development, :test do
   gem 'byebug'
