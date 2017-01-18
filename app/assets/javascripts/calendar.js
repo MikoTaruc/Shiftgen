@@ -1,5 +1,5 @@
 var Calendar = {
-  init: function(){
+  init: function() {
     // moustache style templating
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
@@ -9,19 +9,8 @@ var Calendar = {
     Calendar.shift_block = 4;
     Calendar.pay_period_length = 14;
 
-    $(document).on('ready', function(){
-      $('#calendar').fullCalendar({
-        eventSources: [
-          {
-            googleCalendarApiKey: 'AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE',
-            url: 'en.canadian#holiday@group.v.calendar.google.com',
-            color: '#378006'
-          }
-        ],
-        height: 400,
-        aspectRatio: 2
-      });
-
+    $(document).on('ready', function() {
+      CalendarHolidays.addHolidays("cdn");
       Calendar.calendar = $('#calendar');
       Calendar.initListeners();
     });
