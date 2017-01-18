@@ -17,7 +17,9 @@
   Year: <%= text_field_tag 'year', nil, :id => "pay_year", :placeholder => "2016" %>
   Month: <%= text_field_tag 'month', nil, :id => "pay_month", :placeholder => "01" %>
   Day: <%= text_field_tag 'day', nil, :id => "pay_day", :placeholder => "01" %>
-  <%= submit_tag("test") %>
+  <%= submit_tag("Generate Shifts") %>
 <% end %>
-
+<%= form_tag sync_path, :method => :post, :id => "sync_form" do %>
+  <%= submit_tag("Sync Form") %>
+<% end %>
 <div id="calendar"></div>
