@@ -17,7 +17,7 @@ var Calendar = {
   },
 
   initListeners: function() {
-    $('#date_form').on('submit', function(e){
+    $('#date_form').on('submit', function(e) {
         e.preventDefault();
         var year = $(this).find("#year").val();
         var month = $(this).find("#month").val();
@@ -27,6 +27,11 @@ var Calendar = {
         var pay_month = $(this).find("#pay_month").val();
         var pay_day =  $(this).find("#pay_day").val();
         Calendar.parseInputs(year, month, day, pay_year, pay_month, pay_day);
+    });
+
+    $('#sync').on('click', function(e) {
+      // Edit this to pass all work events
+      CalendarSync.sync({"test": "yes"});
     });
   },
 

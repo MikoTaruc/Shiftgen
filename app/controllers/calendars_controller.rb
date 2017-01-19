@@ -6,6 +6,7 @@ class CalendarsController < ApplicationController
 
   def google_sync
     pp "Syncing with google TEST"
+    pp params
     render :json => {}, :status => 200
   end
 end
