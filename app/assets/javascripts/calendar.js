@@ -31,7 +31,8 @@ var Calendar = {
 
     $('#sync').on('click', function(e) {
       // Edit this to pass all work events
-      CalendarSync.sync({"test": "yes"});
+      data = {"test": "yes"};
+      CalendarSync.sync(data);
     });
   },
 
