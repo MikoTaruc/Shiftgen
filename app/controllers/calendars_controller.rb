@@ -7,27 +7,6 @@ require 'fileutils'
 
 class CalendarsController < ApplicationController
   def index
-    client = Signet::OAuth2::Client.new(access_token: session[:access_token])
-
-    client.expires_in = Time.now + 1_000_000
-
-    service = Google::Apis::CalendarV3::CalendarService.new
-
-    service.authorization = client
-    begin
-      @all_calendars = service.list_calendar_lists
-    rescue ArgumentError => e
-      pp e.message == "Missing token endpoint URI."
-      redirect_to url_for(:action => :redirect) if e.message == "Missing token endpoint URI."
-    end
-
-    calendar = Google::Apis::CalendarV3::Calendar.new(
-      summary: 'TestCalendar',
-      time_zone:'America/Los_Angeles'
-    )
-    service.insert_calendar(calendar)
-    pp "AGERG"
-    pp service
   end
 
   def redirect
@@ -57,12 +36,26 @@ class CalendarsController < ApplicationController
   end
 
   def google_sync
-    pp "Syncing with google TEST"
-    pp params
+    client = Signet::OAuth2::Client.new(access_token: session[:access_token])
 
-    calendar = Google::Apis::CalendarV3::CalendarService.new
-    calendar.authorization = authorization
+    client.expires_in = Time.now + 1_000_000
 
-    render :json => {}, :status => 200
+    service = Google::Apis::CalendarV3::CalendarService.new
+
+    service.authorization = client
+    begin
+      @all_calendars = service.list_calendar_lists
+    rescue ArgumentError => e
+      pp e.message == "Missing token endpoint URI."
+      redirect_to url_for(:action => :redirect) if e.message == "Missing token endpoint URI."
+    end
+
+    calendar = Google::Apis::CalendarV3::Calendar.new(
+      summary: 'TestCalendar',
+      time_zone:'America/Los_Angeles'
+    )
+    service.insert_calendar(calendar)
+    pp "AGERG"
+    pp service
   end
 end
