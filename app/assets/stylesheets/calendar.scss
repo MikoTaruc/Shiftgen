@@ -1,3 +1,25 @@
 #calendar {
   // width: 1500px;
 }
+
+#workflow-bar-wrapper {
+  .workflow-bar {
+    list-style-type: none;
+
+    li:nth-child(1) {
+      background-color: red;
+    }
+
+    li {
+      float: left;
+      left: 0;
+      border-top: 1px solid #000;
+      border-bottom : 1px solid #000;
+      padding: 0 30px;
+
+      .workflow-label {
+
+      }
+    }
+  }
+}

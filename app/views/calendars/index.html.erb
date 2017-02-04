@@ -6,6 +6,10 @@
   Calendar.init();
 </script>
 
+<div class="container">
+  <%= render :partial => 'workflow_bar' %>
+</div>
+
 <%= form_tag "/", :id => "date_form" do %>
   First Shift:</br>
   Year: <%= text_field_tag 'year', nil, :id => "year", :placeholder => "2016" %>
