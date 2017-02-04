@@ -19,8 +19,11 @@
   Day: <%= text_field_tag 'day', nil, :id => "pay_day", :placeholder => "01" %>
   <%= submit_tag("Generate Shifts") %>
 <% end %>
+
 <%= form_tag sync_path, :method => :post, :id => "sync_form" do %>
   <%= submit_tag("Sync Form") %>
 <% end %>
+
 <%= button_tag "SYNC", :id => "sync" %>
+
 <div id="calendar"></div>
